@@ -1,0 +1,7 @@
+# Allow to miss top-level class documentation comment
+Style/Documentation:
+  Enabled: false
+
+# Allow short variable names like x or y
+Naming/UncommunicativeMethodParamName:
+  MinNameLength: 1
