@@ -4,7 +4,8 @@
 # [x] 1.2
 # [x] 1.3
 # [x] 1.4
-# [ ] 1.5 p.23
+# [x] 1.5 p.25
+# [ ] 1.6
 
 puts '##### 1.1'
 
@@ -100,3 +101,55 @@ p def multiply(a, b)
     a * b
   end
 p multiply(2, 3)
+
+puts "\n##### 1.5"
+
+p class Calculator
+    def divide(x, y)
+      x / y
+    end
+  end
+
+c = Calculator.new
+p c
+p c.class
+p c.divide(10, 2)
+
+p class MultiplyingCalculator < Calculator
+    def multiply(x, y)
+      x * y
+    end
+  end
+
+mc = MultiplyingCalculator.new
+p mc
+p mc.class
+p mc.class.superclass
+p mc.multiply(10, 2)
+p mc.divide(10, 2)
+
+p class BinaryMultiplyingCalculator < MultiplyingCalculator
+    def multiply(x, y)
+      result = super(x, y)
+      result.to_s(2)
+    end
+  end
+bmc = BinaryMultiplyingCalculator.new
+p bmc
+p bmc.multiply(10, 2)
+
+p module Addition
+    def add(x, y)
+      x + y
+    end
+  end
+# p class AddingCalculator
+#     include Addition
+#   end
+class AddingCalculator
+end
+p AddingCalculator.include Addition
+
+ac = AddingCalculator.new
+p ac
+p ac.add(10, 2)
