@@ -88,18 +88,18 @@ puts "\n##### 1.4"
 o = Object.new
 p o
 p def o.add(x, y)
-    x + y
-  end
+  x + y
+end
 p o.add(2, 3)
 
 p def o.add_twice(x, y)
-    add(x, y) + add(x, y)
-  end
+  add(x, y) + add(x, y)
+end
 p o.add_twice(2, 3)
 
 p def multiply(a, b)
-    a * b
-  end
+  a * b
+end
 p multiply(2, 3)
 
 puts "\n##### 1.5"
