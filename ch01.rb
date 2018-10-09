@@ -3,7 +3,8 @@
 # [x] 1.1
 # [x] 1.2
 # [x] 1.3
-# [ ] 1.4 p.22
+# [x] 1.4
+# [ ] 1.5 p.23
 
 puts '##### 1.1'
 
@@ -82,3 +83,20 @@ p((x *= 2 while x < 1000))
 p x
 
 puts "\n##### 1.4"
+
+o = Object.new
+p o
+p def o.add(x, y)
+    x + y
+  end
+p o.add(2, 3)
+
+p def o.add_twice(x, y)
+    add(x, y) + add(x, y)
+  end
+p o.add_twice(2, 3)
+
+p def multiply(a, b)
+    a * b
+  end
+p multiply(2, 3)
