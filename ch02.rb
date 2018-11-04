@@ -7,6 +7,8 @@
 #   [ ] 2.3.1
 #   [ ] 2.3.1.1 p.24
 
+require 'pry-byebug'
+
 # reduce
 ret = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].reduce do |x, y|
   x + y
