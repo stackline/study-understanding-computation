@@ -56,3 +56,12 @@ add = Add.new(
 # ref. https://stackoverflow.com/questions/25488902/what-happens-when-you-use-string-interpolation-in-ruby/25491660?stw=2#25491660
 p add
 p Number.new(5)
+
+multiply = Multiply.new(
+  Number.new(1),
+  Multiply.new(
+    Add.new(Number.new(2), Number.new(3)),
+    Number.new(4)
+  )
+)
+p multiply
