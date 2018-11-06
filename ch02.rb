@@ -5,7 +5,7 @@
 # [x] 2.2
 # [ ] 2.3
 #   [ ] 2.3.1
-#   [ ] 2.3.1.1 p.24
+#   [ ] 2.3.1.1 p.26
 
 require 'pry-byebug'
 
@@ -26,6 +26,10 @@ class Number < Struct.new(:value)
   def inspect
     "<<#{self}>>"
   end
+
+  def reducible?
+    false
+  end
 end
 
 class Add < Struct.new(:left, :right)
@@ -36,6 +40,10 @@ class Add < Struct.new(:left, :right)
   def inspect
     "<<#{self}>>"
   end
+
+  def reducible?
+    true
+  end
 end
 
 class Multiply < Struct.new(:left, :right)
@@ -45,6 +53,10 @@ class Multiply < Struct.new(:left, :right)
 
   def inspect
     "<<#{self}>>"
+  end
+
+  def reducible?
+    true
   end
 end
 
@@ -65,3 +77,6 @@ multiply = Multiply.new(
   )
 )
 p multiply
+
+p Number.new(1).reducible?
+p Add.new(Number.new(1), Number.new(2)).reducible?
