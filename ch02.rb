@@ -5,7 +5,7 @@
 # [x] 2.2
 # [ ] 2.3
 #   [ ] 2.3.1
-#   [ ] 2.3.1.1 p.26
+#   [ ] 2.3.1.1 p.27
 
 require 'pry-byebug'
 
@@ -44,6 +44,16 @@ class Add < Struct.new(:left, :right)
   def reducible?
     true
   end
+
+  def reduce
+    if left.reducible?
+      Add.new(left.reduce, right)
+    elsif right.reducible?
+      Add.new(left, right.reduce)
+    else
+      Number.new(left.value + right.value)
+    end
+  end
 end
 
 class Multiply < Struct.new(:left, :right)
@@ -58,25 +68,44 @@ class Multiply < Struct.new(:left, :right)
   def reducible?
     true
   end
+
+  def reduce
+    if left.reducible?
+      Multiply.new(left.reduce, right)
+    elsif right.reducible?
+      Multiply.new(left, right.reduce)
+    else
+      Number.new(left.value * right.value)
+    end
+  end
 end
 
-add = Add.new(
+# Internally call `#inspect` and call `#to_s` and expect a string.
+# ref. https://stackoverflow.com/questions/25488902/what-happens-when-you-use-string-interpolation-in-ruby/25491660?stw=2#25491660
+expression = Add.new(
   Multiply.new(Number.new(1), Number.new(2)),
   Multiply.new(Number.new(3), Number.new(4))
 )
-# Internally call `#inspect` and call `#to_s` and expect a string.
-# ref. https://stackoverflow.com/questions/25488902/what-happens-when-you-use-string-interpolation-in-ruby/25491660?stw=2#25491660
-p add
-p Number.new(5)
+p expression
+# => <<1 * 2 + 3 * 4>>
+p expression.reducible?
 
-multiply = Multiply.new(
-  Number.new(1),
-  Multiply.new(
-    Add.new(Number.new(2), Number.new(3)),
-    Number.new(4)
-  )
-)
-p multiply
+expression = expression.reduce
+p expression
+# => <<2 + 3 * 4>>
+p expression.reducible?
 
-p Number.new(1).reducible?
-p Add.new(Number.new(1), Number.new(2)).reducible?
+expression = expression.reduce
+p expression
+# => <<2 + 12>>
+p expression.reducible?
+
+expression = expression.reduce
+p expression
+# => <<14>>
+p expression.reducible?
+
+# MEMO: Pass Enumerable#reduce method to an object of Struct Class.
+expression = expression.reduce
+p expression
+# => 14
