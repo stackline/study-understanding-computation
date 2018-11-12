@@ -5,7 +5,7 @@
 # [x] 2.2
 # [ ] 2.3
 #   [ ] 2.3.1
-#   [ ] 2.3.1.1 p.27
+#   [ ] 2.3.1.1 p.28
 
 require 'pry-byebug'
 
@@ -80,32 +80,36 @@ class Multiply < Struct.new(:left, :right)
   end
 end
 
+class Machine < Struct.new(:expression)
+  def run
+    while expression.reducible?
+      puts expression
+      step
+    end
+    puts expression
+  end
+
+  private
+
+  def step
+    # You need to specify the `self` receiver when calling the setter method.
+    # If you do not specify a `self` receiver,
+    # it is interpreted as a local variable declaration.
+    #
+    # e.g. case with no receiver
+    # 1. Evaluate a expression
+    #   expression=(expression.reduce)
+    # 2. Declare an `expression` variable that is nil
+    # 3. Execute `expression.reduce` as `nil.reduce`
+    # 4. NoMethodError occurs
+    self.expression = expression.reduce
+  end
+end
+
 # Internally call `#inspect` and call `#to_s` and expect a string.
 # ref. https://stackoverflow.com/questions/25488902/what-happens-when-you-use-string-interpolation-in-ruby/25491660?stw=2#25491660
 expression = Add.new(
   Multiply.new(Number.new(1), Number.new(2)),
   Multiply.new(Number.new(3), Number.new(4))
 )
-p expression
-# => <<1 * 2 + 3 * 4>>
-p expression.reducible?
-
-expression = expression.reduce
-p expression
-# => <<2 + 3 * 4>>
-p expression.reducible?
-
-expression = expression.reduce
-p expression
-# => <<2 + 12>>
-p expression.reducible?
-
-expression = expression.reduce
-p expression
-# => <<14>>
-p expression.reducible?
-
-# MEMO: Pass Enumerable#reduce method to an object of Struct Class.
-expression = expression.reduce
-p expression
-# => 14
+p Machine.new(expression).run
