@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Around Ruby
 #
 # [x] 1.1

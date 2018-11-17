@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Meaning of programming
 
 # [x] Prologue
