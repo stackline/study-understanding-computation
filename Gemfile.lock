@@ -6,6 +6,7 @@ GEM
     coderay (1.1.2)
     jaro_winkler (1.5.1)
     method_source (0.9.1)
+    minitest (5.11.3)
     parallel (1.12.1)
     parser (2.5.1.2)
       ast (~> 2.4.0)
@@ -32,6 +33,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  minitest
   pry-byebug
   rubocop
 
