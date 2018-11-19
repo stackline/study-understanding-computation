@@ -285,9 +285,11 @@ p NUMBERS = [4, 8, 15, 16, 23, 42].freeze
 p NUMBERS
 
 p class Greetings
+    # rubocop:disable Style/RedundantFreeze
     ENGLISH = ' hello'.freeze
     FRENCH = 'bonjour'.freeze
     GERMAN = 'guten Tag'.freeze
+    # rubocop:enable Style/RedundantFreeze
   end
 p NUMBERS.last
 p Greetings::FRENCH
