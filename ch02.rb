@@ -11,7 +11,7 @@
 
 require 'pry-byebug'
 
-class Number < Struct.new(:value)
+Number = Struct.new(:value) do
   def to_s
     value.to_s
   end
@@ -25,7 +25,7 @@ class Number < Struct.new(:value)
   end
 end
 
-class Add < Struct.new(:left, :right)
+Add = Struct.new(:left, :right) do
   def to_s
     "#{left} + #{right}"
   end
@@ -49,7 +49,7 @@ class Add < Struct.new(:left, :right)
   end
 end
 
-class Multiply < Struct.new(:left, :right)
+Multiply = Struct.new(:left, :right) do
   def to_s
     "#{left} * #{right}"
   end
@@ -78,7 +78,7 @@ end
 # These two methods expect a string.
 #
 # ref. https://stackoverflow.com/questions/25488902/what-happens-when-you-use-string-interpolation-in-ruby/25491660?stw=2#25491660
-class Machine < Struct.new(:expression)
+Machine = Struct.new(:expression) do
   def run
     while expression.reducible?
       puts expression
