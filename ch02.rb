@@ -11,15 +11,6 @@
 
 require 'pry-byebug'
 
-# reduce
-ret = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].reduce do |x, y|
-  x + y
-end
-p ret
-
-# expression
-puts "\n### expression\n"
-
 class Number < Struct.new(:value)
   def to_s
     value.to_s
@@ -82,6 +73,11 @@ class Multiply < Struct.new(:left, :right)
   end
 end
 
+# `Kernel.#puts` internally call `to_s` method.
+# Interpolation internally calls `to_s` method.
+# These two methods expect a string.
+#
+# ref. https://stackoverflow.com/questions/25488902/what-happens-when-you-use-string-interpolation-in-ruby/25491660?stw=2#25491660
 class Machine < Struct.new(:expression)
   def run
     while expression.reducible?
@@ -107,11 +103,3 @@ class Machine < Struct.new(:expression)
     self.expression = expression.reduce
   end
 end
-
-# Internally call `#inspect` and call `#to_s` and expect a string.
-# ref. https://stackoverflow.com/questions/25488902/what-happens-when-you-use-string-interpolation-in-ruby/25491660?stw=2#25491660
-expression = Add.new(
-  Multiply.new(Number.new(1), Number.new(2)),
-  Multiply.new(Number.new(3), Number.new(4))
-)
-p Machine.new(expression).run
