@@ -38,7 +38,7 @@ Add = Struct.new(:left, :right) do
     true
   end
 
-  def reduce
+  def reduce # rubocop:disable Metrics/AbcSize
     if left.reducible?
       Add.new(left.reduce, right)
     elsif right.reducible?
@@ -62,7 +62,7 @@ Multiply = Struct.new(:left, :right) do
     true
   end
 
-  def reduce
+  def reduce # rubocop:disable Metrics/AbcSize
     if left.reducible?
       Multiply.new(left.reduce, right)
     elsif right.reducible?
