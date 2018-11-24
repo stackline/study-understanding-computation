@@ -1,3 +1,15 @@
+# MEMO: Specify the ruby version to solve the following cop error.
+#
+#   ch02_test.rb:7:21: E: Lint/Syntax: unexpected token tLSHFT
+#   (Using Ruby 2.2 parser; configure using TargetRubyVersion parameter, under AllCops)
+#     EXPECTED_OUTPUT = <<~REDUCTION_STEP
+#                       ^^
+#
+# Specify the ruby version in .rubocop.yml,
+# since it does not refer to .ruby-version when executing Rubocop via bundler.
+AllCops:
+  TargetRubyVersion: 2.5
+
 # Allow to miss top-level class documentation comment
 Style/Documentation:
   Enabled: false
