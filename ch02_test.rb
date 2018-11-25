@@ -2,6 +2,8 @@
 
 require_relative 'ch02'
 require 'minitest/autorun'
+require 'minitest/reporters'
+Minitest::Reporters.use! Minitest::Reporters::SpecReporter.new
 
 class TestMachine < Minitest::Test
   EXPECTED_OUTPUT = <<~REDUCTION_STEP
