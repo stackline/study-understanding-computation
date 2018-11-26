@@ -6,23 +6,32 @@ require 'minitest/reporters'
 Minitest::Reporters.use! Minitest::Reporters::SpecReporter.new
 
 class TestMachine < Minitest::Test
-  EXPECTED_OUTPUT = <<~REDUCTION_STEP
+  EXPECTED_ADD_MULTIPLY_OUTPUT = <<~REDUCTION_STEP
     1 * 2 + 3 * 4
     2 + 3 * 4
     2 + 12
     14
   REDUCTION_STEP
 
-  def setup
+  def test_run_add_and_multiply
     expression = Add.new(
       Multiply.new(Number.new(1), Number.new(2)),
       Multiply.new(Number.new(3), Number.new(4))
     )
-    @machine = Machine.new(expression)
+    assert_output(EXPECTED_ADD_MULTIPLY_OUTPUT) { Machine.new(expression).run }
   end
 
-  def test_run
-    puts "\nMachine#run"
-    assert_output(EXPECTED_OUTPUT) { @machine.run }
+  EXPECTED_LESS_THAN_OUTPUT = <<~REDUCTION_STEP
+    5 < 2 + 2
+    5 < 4
+    false
+  REDUCTION_STEP
+
+  def test_run_less_than
+    expression = LessThan.new(
+      Number.new(5),
+      Add.new(Number.new(2), Number.new(2))
+    )
+    assert_output(EXPECTED_LESS_THAN_OUTPUT) { Machine.new(expression).run }
   end
 end
