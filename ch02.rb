@@ -111,6 +111,20 @@ LessThan = Struct.new(:left, :right) do
   end
 end
 
+Variable = Struct.new(:name) do
+  def to_s
+    name.to_s
+  end
+
+  def inspect
+    "<<#{self}>>"
+  end
+
+  def reducible?
+    true
+  end
+end
+
 # `Kernel.#puts` internally call `to_s` method.
 # Interpolation internally calls `to_s` method.
 # These two methods expect a string.
