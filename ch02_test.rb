@@ -34,4 +34,19 @@ class TestMachine < Minitest::Test
     )
     assert_output(EXPECTED_LESS_THAN_OUTPUT) { Machine.new(expression).run }
   end
+
+  EXPECTED_VARIABLE_OUTPUT = <<~REDUCTION_STEP
+    x + y
+    3 + y
+    3 + 4
+    7
+  REDUCTION_STEP
+
+  def test_run_variable
+    expression = Add.new(Variable.new(:x), Variable.new(:y))
+    environment = { x: Number.new(3), y: Number.new(4) }
+    assert_output(EXPECTED_VARIABLE_OUTPUT) do
+      Machine.new(expression, environment).run
+    end
+  end
 end

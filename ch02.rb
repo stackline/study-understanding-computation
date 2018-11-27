@@ -7,7 +7,8 @@
 # [x] 2.2
 # [ ] 2.3
 #   [ ] 2.3.1
-#   [ ] 2.3.1.1 p.29
+#     [x] 2.3.1.1
+#     [ ] 2.3.1.2 p.31
 
 require 'pry-byebug'
 
@@ -38,11 +39,11 @@ Add = Struct.new(:left, :right) do
     true
   end
 
-  def reduce # rubocop:disable Metrics/AbcSize
+  def reduce(environment) # rubocop:disable Metrics/AbcSize
     if left.reducible?
-      Add.new(left.reduce, right)
+      Add.new(left.reduce(environment), right)
     elsif right.reducible?
-      Add.new(left, right.reduce)
+      Add.new(left, right.reduce(environment))
     else
       Number.new(left.value + right.value)
     end
@@ -62,11 +63,11 @@ Multiply = Struct.new(:left, :right) do
     true
   end
 
-  def reduce # rubocop:disable Metrics/AbcSize
+  def reduce(environment) # rubocop:disable Metrics/AbcSize
     if left.reducible?
-      Multiply.new(left.reduce, right)
+      Multiply.new(left.reduce(environment), right)
     elsif right.reducible?
-      Multiply.new(left, right.reduce)
+      Multiply.new(left, right.reduce(environment))
     else
       Number.new(left.value * right.value)
     end
@@ -100,11 +101,11 @@ LessThan = Struct.new(:left, :right) do
     true
   end
 
-  def reduce # rubocop:disable Metrics/AbcSize
+  def reduce(environment) # rubocop:disable Metrics/AbcSize
     if left.reducible?
-      LessThan.new(left.reduce, right)
+      LessThan.new(left.reduce(environment), right)
     elsif right.reducible?
-      LessThan.new(left, right.reduce)
+      LessThan.new(left, right.reduce(environment))
     else
       Boolean.new(left.value < right.value)
     end
@@ -123,6 +124,10 @@ Variable = Struct.new(:name) do
   def reducible?
     true
   end
+
+  def reduce(environment)
+    environment[name]
+  end
 end
 
 # `Kernel.#puts` internally call `to_s` method.
@@ -130,7 +135,7 @@ end
 # These two methods expect a string.
 #
 # ref. https://stackoverflow.com/questions/25488902/what-happens-when-you-use-string-interpolation-in-ruby/25491660?stw=2#25491660
-Machine = Struct.new(:expression) do
+Machine = Struct.new(:expression, :environment) do
   def run
     while expression.reducible?
       puts expression
@@ -152,6 +157,6 @@ Machine = Struct.new(:expression) do
     # 2. Declare an `expression` variable that is nil
     # 3. Execute `expression.reduce` as `nil.reduce`
     # 4. NoMethodError occurs
-    self.expression = expression.reduce
+    self.expression = expression.reduce(environment)
   end
 end
