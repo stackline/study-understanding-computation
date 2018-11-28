@@ -8,7 +8,7 @@
 # [ ] 2.3
 #   [ ] 2.3.1
 #     [x] 2.3.1.1
-#     [ ] 2.3.1.2 p.31
+#     [ ] 2.3.1.2 p.33
 
 require 'pry-byebug'
 
@@ -127,6 +127,24 @@ Variable = Struct.new(:name) do
 
   def reduce(environment)
     environment[name]
+  end
+end
+
+class DoNothing
+  def to_s
+    'do-nothing'
+  end
+
+  def inspect
+    "<<#{self}>>"
+  end
+
+  def ==(other)
+    other.instance_of?(DoNothing)
+  end
+
+  def reducible?
+    false
   end
 end
 
