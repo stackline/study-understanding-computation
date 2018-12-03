@@ -148,6 +148,28 @@ class DoNothing
   end
 end
 
+Assign = Struct.new(:name, :expression) do
+  def to_s
+    "#{name} = #{expression}"
+  end
+
+  def inspect
+    "<<#{self}>>"
+  end
+
+  def reducible?
+    true
+  end
+
+  def reduce(environment)
+    if expression.reducible?
+      [Assign.new(name, expression.reduce(environment)), environment]
+    else
+      [DoNothing.new, environment.merge(name => expression)]
+    end
+  end
+end
+
 # `Kernel.#puts` internally call `to_s` method.
 # Interpolation internally calls `to_s` method.
 # These two methods expect a string.
@@ -178,3 +200,18 @@ Machine = Struct.new(:expression, :environment) do
     self.expression = expression.reduce(environment)
   end
 end
+
+statement = Assign.new(:x, Add.new(Variable.new(:x), Number.new(1)))
+environment = { x: Number.new(2) }
+
+p statement
+p environment
+
+p statement.reducible?
+statement, environment = statement.reduce(environment)
+p [statement, environment]
+statement, environment = statement.reduce(environment)
+p [statement, environment]
+statement, environment = statement.reduce(environment)
+p [statement, environment]
+p statement.reducible?
