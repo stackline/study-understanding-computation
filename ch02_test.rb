@@ -61,4 +61,20 @@ class TestMachine < Minitest::Test
       Machine.new(statement, environment).run
     end
   end
+
+  EXPECTED_ASSIGN_OUTPUT = <<~REDUCTION_STEP
+    x = x + 1, {:x=><<2>>}
+    x = 2 + 1, {:x=><<2>>}
+    x = 3, {:x=><<2>>}
+    do-nothing, {:x=><<3>>}
+  REDUCTION_STEP
+
+  def test_run_assign
+    expression = Add.new(Variable.new(:x), Number.new(1))
+    statement = Assign.new(:x, expression)
+    environment = { x: Number.new(2) }
+    assert_output(EXPECTED_ASSIGN_OUTPUT) do
+      Machine.new(statement, environment).run
+    end
+  end
 end
