@@ -8,7 +8,7 @@
 # [ ] 2.3
 #   [ ] 2.3.1
 #     [x] 2.3.1.1
-#     [ ] 2.3.1.2 p.33
+#     [ ] 2.3.1.2 p.34
 
 require 'pry-byebug'
 
@@ -175,13 +175,13 @@ end
 # These two methods expect a string.
 #
 # ref. https://stackoverflow.com/questions/25488902/what-happens-when-you-use-string-interpolation-in-ruby/25491660?stw=2#25491660
-Machine = Struct.new(:expression, :environment) do
+Machine = Struct.new(:statement, :environment) do
   def run
-    while expression.reducible?
-      puts expression
+    while statement.reducible?
+      puts "#{statement}, #{environment}"
       step
     end
-    puts expression
+    puts "#{statement}, #{environment}"
   end
 
   private
@@ -197,21 +197,6 @@ Machine = Struct.new(:expression, :environment) do
     # 2. Declare an `expression` variable that is nil
     # 3. Execute `expression.reduce` as `nil.reduce`
     # 4. NoMethodError occurs
-    self.expression = expression.reduce(environment)
+    self.statement, self.environment = statement.reduce(environment)
   end
 end
-
-statement = Assign.new(:x, Add.new(Variable.new(:x), Number.new(1)))
-environment = { x: Number.new(2) }
-
-p statement
-p environment
-
-p statement.reducible?
-statement, environment = statement.reduce(environment)
-p [statement, environment]
-statement, environment = statement.reduce(environment)
-p [statement, environment]
-statement, environment = statement.reduce(environment)
-p [statement, environment]
-p statement.reducible?
