@@ -77,4 +77,23 @@ class TestMachine < Minitest::Test
       Machine.new(statement, environment).run
     end
   end
+
+  EXPECTED_IF_OUTPUT = <<~REDUCTION_STEP
+    if (x) { y = 1 } else { y = 2 }, {:x=><<true>>}
+    if (true) { y = 1 } else { y = 2 }, {:x=><<true>>}
+    y = 1, {:x=><<true>>}
+    do-nothing, {:x=><<true>>, :y=><<1>>}
+  REDUCTION_STEP
+
+  def test_run_if
+    statement = If.new(
+      Variable.new(:x),
+      Assign.new(:y, Number.new(1)),
+      Assign.new(:y, Number.new(2))
+    )
+    environment = { x: Boolean.new(true) }
+    assert_output(EXPECTED_IF_OUTPUT) do
+      Machine.new(statement, environment).run
+    end
+  end
 end

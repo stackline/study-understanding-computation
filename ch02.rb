@@ -8,7 +8,7 @@
 # [ ] 2.3
 #   [ ] 2.3.1
 #     [x] 2.3.1.1
-#     [ ] 2.3.1.2 p.35
+#     [ ] 2.3.1.2 p.36
 
 require 'pry-byebug'
 
@@ -166,6 +166,32 @@ Assign = Struct.new(:name, :expression) do
       [Assign.new(name, expression.reduce(environment)), environment]
     else
       [DoNothing.new, environment.merge(name => expression)]
+    end
+  end
+end
+
+If = Struct.new(:condition, :consequence, :alternative) do
+  def to_s
+    "if (#{condition}) { #{consequence} } else { #{alternative} }"
+  end
+
+  def inspect
+    "<<#{self}>>"
+  end
+
+  def reducible?
+    true
+  end
+
+  def reduce(environment)
+    if condition.reducible?
+      reduced_condition = condition.reduce(environment)
+      [If.new(reduced_condition, consequence, alternative), environment]
+    else
+      case condition
+      when Boolean.new(true) then [consequence, environment]
+      when Boolean.new(false) then [alternative, environment]
+      end
     end
   end
 end
