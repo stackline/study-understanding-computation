@@ -97,4 +97,22 @@ class TestMachine < Minitest::Test
       Machine.new(statement, environment).run
     end
   end
+
+  EXPECTED_IF_WITHOUT_ELSE_OUTPUT = <<~REDUCTION_STEP
+    if (x) { y = 1 } else { do-nothing }, {:x=><<false>>}
+    if (false) { y = 1 } else { do-nothing }, {:x=><<false>>}
+    do-nothing, {:x=><<false>>}
+  REDUCTION_STEP
+
+  def test_run_if_without_else
+    statement = If.new(
+      Variable.new(:x),
+      Assign.new(:y, Number.new(1)),
+      DoNothing.new
+    )
+    environment = { x: Boolean.new(false) }
+    assert_output(EXPECTED_IF_WITHOUT_ELSE_OUTPUT) do
+      Machine.new(statement, environment).run
+    end
+  end
 end
