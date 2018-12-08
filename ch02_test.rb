@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'ch02'
+require 'pry-byebug'
 require 'minitest/autorun'
 require 'minitest/reporters'
 Minitest::Reporters.use! Minitest::Reporters::SpecReporter.new
