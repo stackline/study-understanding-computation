@@ -6,7 +6,7 @@ require 'minitest/autorun'
 require 'minitest/reporters'
 Minitest::Reporters.use! Minitest::Reporters::SpecReporter.new
 
-class TestMachine < Minitest::Test
+class TestMachine < Minitest::Test # rubocop:disable Metrics/ClassLength
   EXPECTED_ADD_MULTIPLY_OUTPUT = <<~REDUCTION_STEP
     x = 1 * 2 + 3 * 4, {}
     x = 2 + 3 * 4, {}
@@ -112,6 +112,26 @@ class TestMachine < Minitest::Test
     )
     environment = { x: Boolean.new(false) }
     assert_output(EXPECTED_IF_WITHOUT_ELSE_OUTPUT) do
+      Machine.new(statement, environment).run
+    end
+  end
+
+  EXPECTED_SEQUENCE_OUTPUT = <<~REDUCTION_STEP
+    x = 1 + 1; y = x + 3, {}
+    x = 2; y = x + 3, {}
+    do-nothing; y = x + 3, {:x=><<2>>}
+    y = x + 3, {:x=><<2>>}
+    y = 2 + 3, {:x=><<2>>}
+    y = 5, {:x=><<2>>}
+    do-nothing, {:x=><<2>>, :y=><<5>>}
+  REDUCTION_STEP
+
+  def test_run_sequence
+    first = Assign.new(:x, Add.new(Number.new(1), Number.new(1)))
+    second = Assign.new(:y, Add.new(Variable.new(:x), Number.new(3)))
+    statement = Sequence.new(first, second)
+    environment = {}
+    assert_output(EXPECTED_SEQUENCE_OUTPUT) do
       Machine.new(statement, environment).run
     end
   end

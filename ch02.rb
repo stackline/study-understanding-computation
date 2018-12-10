@@ -8,7 +8,7 @@
 # [ ] 2.3
 #   [ ] 2.3.1
 #     [x] 2.3.1.1
-#     [ ] 2.3.1.2 p.36
+#     [ ] 2.3.1.2 p.37
 
 require 'pry-byebug'
 
@@ -192,6 +192,30 @@ If = Struct.new(:condition, :consequence, :alternative) do
       when Boolean.new(true) then [consequence, environment]
       when Boolean.new(false) then [alternative, environment]
       end
+    end
+  end
+end
+
+Sequence = Struct.new(:first, :second) do
+  def to_s
+    "#{first}; #{second}"
+  end
+
+  def inspect
+    "<<#{self}>>"
+  end
+
+  def reducible?
+    true
+  end
+
+  def reduce(environment)
+    case first
+    when DoNothing
+      [second, environment]
+    else
+      reduced_first, reduced_environment = first.reduce(environment)
+      [Sequence.new(reduced_first, second), reduced_environment]
     end
   end
 end
