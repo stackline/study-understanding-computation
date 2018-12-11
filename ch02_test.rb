@@ -135,4 +135,38 @@ class TestMachine < Minitest::Test # rubocop:disable Metrics/ClassLength
       Machine.new(statement, environment).run
     end
   end
+
+  EXPECTED_WHILE_OUTPUT = <<~REDUCTION_STEP
+    while (x < 5) { x = x * 3 }, {:x=><<1>>}
+    if (x < 5) { x = x * 3; while (x < 5) { x = x * 3 } } else { do-nothing }, {:x=><<1>>}
+    if (1 < 5) { x = x * 3; while (x < 5) { x = x * 3 } } else { do-nothing }, {:x=><<1>>}
+    if (true) { x = x * 3; while (x < 5) { x = x * 3 } } else { do-nothing }, {:x=><<1>>}
+    x = x * 3; while (x < 5) { x = x * 3 }, {:x=><<1>>}
+    x = 1 * 3; while (x < 5) { x = x * 3 }, {:x=><<1>>}
+    x = 3; while (x < 5) { x = x * 3 }, {:x=><<1>>}
+    do-nothing; while (x < 5) { x = x * 3 }, {:x=><<3>>}
+    while (x < 5) { x = x * 3 }, {:x=><<3>>}
+    if (x < 5) { x = x * 3; while (x < 5) { x = x * 3 } } else { do-nothing }, {:x=><<3>>}
+    if (3 < 5) { x = x * 3; while (x < 5) { x = x * 3 } } else { do-nothing }, {:x=><<3>>}
+    if (true) { x = x * 3; while (x < 5) { x = x * 3 } } else { do-nothing }, {:x=><<3>>}
+    x = x * 3; while (x < 5) { x = x * 3 }, {:x=><<3>>}
+    x = 3 * 3; while (x < 5) { x = x * 3 }, {:x=><<3>>}
+    x = 9; while (x < 5) { x = x * 3 }, {:x=><<3>>}
+    do-nothing; while (x < 5) { x = x * 3 }, {:x=><<9>>}
+    while (x < 5) { x = x * 3 }, {:x=><<9>>}
+    if (x < 5) { x = x * 3; while (x < 5) { x = x * 3 } } else { do-nothing }, {:x=><<9>>}
+    if (9 < 5) { x = x * 3; while (x < 5) { x = x * 3 } } else { do-nothing }, {:x=><<9>>}
+    if (false) { x = x * 3; while (x < 5) { x = x * 3 } } else { do-nothing }, {:x=><<9>>}
+    do-nothing, {:x=><<9>>}
+  REDUCTION_STEP
+
+  def test_run_while
+    condition = LessThan.new(Variable.new(:x), Number.new(5))
+    body = Assign.new(:x, Multiply.new(Variable.new(:x), Number.new(3)))
+    statement = While.new(condition, body)
+    environment = { x: Number.new(1) }
+    assert_output(EXPECTED_WHILE_OUTPUT) do
+      Machine.new(statement, environment).run
+    end
+  end
 end

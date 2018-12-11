@@ -8,7 +8,8 @@
 # [ ] 2.3
 #   [ ] 2.3.1
 #     [x] 2.3.1.1
-#     [ ] 2.3.1.2 p.37
+#     [x] 2.3.1.2
+#     [ ] 2.3.1.3 p.39
 
 require 'pry-byebug'
 
@@ -217,6 +218,26 @@ Sequence = Struct.new(:first, :second) do
       reduced_first, reduced_environment = first.reduce(environment)
       [Sequence.new(reduced_first, second), reduced_environment]
     end
+  end
+end
+
+While = Struct.new(:condition, :body) do
+  def to_s
+    "while (#{condition}) { #{body} }"
+  end
+
+  def inspect
+    "<<#{self}>>"
+  end
+
+  def reducible?
+    true
+  end
+
+  def reduce(environment)
+    consequence = Sequence.new(body, self)
+    alternative = DoNothing.new
+    [If.new(condition, consequence, alternative), environment]
   end
 end
 
