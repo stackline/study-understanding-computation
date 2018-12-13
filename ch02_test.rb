@@ -169,4 +169,23 @@ class TestMachine < Minitest::Test # rubocop:disable Metrics/ClassLength
       Machine.new(statement, environment).run
     end
   end
+
+  EXPECTED_INCORRECT_STATEMENT_OUTPUT = <<~REDUCTION_STEP
+    x = true; x = x + 1, {}
+    do-nothing; x = x + 1, {:x=><<true>>}
+    x = x + 1, {:x=><<true>>}
+    x = true + 1, {:x=><<true>>}
+  REDUCTION_STEP
+
+  def test_run_incorrect_statement
+    first = Assign.new(:x, Boolean.new(true));
+    second = Assign.new(:x, Add.new(Variable.new(:x), Number.new(1)))
+    statement = Sequence.new(first, second)
+    environment = {}
+    assert_output(EXPECTED_INCORRECT_STATEMENT_OUTPUT) do
+      assert_raises NoMethodError do
+        Machine.new(statement, environment).run
+      end
+    end
+  end
 end
